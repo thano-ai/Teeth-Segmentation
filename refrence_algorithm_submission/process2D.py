@@ -131,7 +131,7 @@ class MeshDataset(Dataset):
     def __init__(self, root_dir, max_vertices=8192):
         self.root_dir = root_dir
         self.max_vertices = max_vertices
-        self.file_pairs = self._find_file_pairs()[:2]  # Use only 2 samples for testing
+        self.file_pairs = self._find_file_pairs()[:100]  # Use only 2 samples for testing
 
         if not self.file_pairs:
             raise ValueError(f"No valid OBJ+JSON pairs found in {root_dir}")
@@ -215,7 +215,7 @@ class MeshDataset(Dataset):
 class ScanSegmentation2D:
     def __init__(self, max_vertices=8192):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.model = UNet2D(in_channels=3, out_channels=48)  # 48 classes for teeth segmentation
+        self.model = UNet2D(in_channels=3, out_channels=49)  # 48 classes for teeth segmentation
         self.model.to(self.device)
         self.max_vertices = max_vertices
         self.grid_size = int(np.ceil(np.sqrt(max_vertices)))  # Size of 2D grid
@@ -487,11 +487,11 @@ class ScanSegmentation2D:
 
 
 if __name__ == "__main__":
-    input_dir = 'D:/UST/AI/3DTeethSeg22_challenge/data/3dteethseg/raw'
+    input_dir = "D:\Teeth3DS\data_part_1"
     scan_segmentation = ScanSegmentation2D(max_vertices=8192)
 
     try:
-        scan_segmentation.train(input_dir, epochs=3)
+        scan_segmentation.train(input_dir, epochs=100)
         scan_segmentation.process(input_dir)
     except Exception as e:
         print(f"Error: {str(e)}")
