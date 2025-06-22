@@ -1,1 +1,18 @@
-trimesh==3.10.2
+# Core requirements
+trimesh>=3.9.0
+numpy>=1.19.0
+torch>=1.8.0
+scikit-learn>=0.24.0
+matplotlib>=3.4.0
+opencv-python>=4.5.0
+
+# Visualization options (choose one or more)
+pyglet<2.0  # For native trimesh visualization
+plotly>=5.0.0  # For interactive browser-based visualization
+pyvista>=0.32.0  # For HTML export visualization
+vedo>=2021.0.5  # Alternative 3D visualization
+
+# Optional but recommended
+jupyter>=1.0.0  # For notebook-based visualization
+ipywidgets>=7.6.0  # For interactive widgets
+tqdm>=4.61.0  # For progress bars
