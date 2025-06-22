@@ -449,17 +449,41 @@ class ScanSegmentation2D:
             json.dump(pred_output, fp, cls=NpEncoder)
         print(f"Output written to {output_path}")
 
+    def visualize_results(self, obj_path, labels):
+        """Visualize predictions on the original mesh"""
+        import matplotlib.pyplot as plt
+        import trimesh
+
+        # Load the original mesh
+        mesh = trimesh.load(obj_path, process=False)
+
+        # Create colormap (one color per unique label)
+        unique_labels = np.unique(labels)
+        colors = plt.cm.tab20(np.linspace(0, 1, len(unique_labels)))
+
+        # Assign colors to vertices
+        vertex_colors = np.zeros((len(labels), 4))  # RGBA colors
+        for i, label in enumerate(unique_labels):
+            vertex_colors[labels == label] = colors[i]
+
+        # Apply colors to mesh
+        mesh.visual.vertex_colors = vertex_colors
+
+        # Display interactive 3D view
+        mesh.show()
+
     def process(self, input_dir):
         inputs = self.load_input(input_dir)
-        # Find matching JSON file (assuming same name but .json extension)
         obj_path = inputs[0]
         json_path = os.path.splitext(obj_path)[0] + ".json"
 
-        # Call predict and get all three return values
         labels, instances, jaw = self.predict(obj_path, json_path)
 
-        # Convert numpy arrays to lists for JSON serialization
+        # Write output
         self.write_output(labels=labels.tolist(), instances=instances.tolist(), jaw=jaw)
+
+        # Visualize predictions
+        self.visualize_results(obj_path, labels)
 
 
 if __name__ == "__main__":
